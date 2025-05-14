@@ -7,10 +7,8 @@ import { Database } from '@/integrations/supabase/types';
 // Define valid table names for strong typing
 type TableName = keyof Database['public']['Tables'];
 
-// Type for query results based on table name
-type TableTypes = {
-  [K in TableName]: Database['public']['Tables'][K]['Row']
-};
+// Define a type that maps table names to their row types
+type TableRow<T extends TableName> = Database['public']['Tables'][T]['Row'];
 
 interface QueryOptions<T extends TableName> {
   tableName: T;
@@ -30,7 +28,7 @@ export function useSupabaseQuery<T extends TableName>({
   orderBy,
   limit
 }: QueryOptions<T>) {
-  const [data, setData] = useState<TableTypes[T][] | null>(null);
+  const [data, setData] = useState<TableRow<T>[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -39,7 +37,6 @@ export function useSupabaseQuery<T extends TableName>({
       try {
         setIsLoading(true);
         
-        // Use the correct typing for the query
         let query = supabase.from(tableName).select('*');
         
         if (column && value !== undefined) {
@@ -62,7 +59,8 @@ export function useSupabaseQuery<T extends TableName>({
           throw error;
         }
         
-        setData(result as TableTypes[T][]);
+        // Use a type assertion with unknown as an intermediate step
+        setData(result as unknown as TableRow<T>[]);
       } catch (err: any) {
         setError(err);
         toast({
