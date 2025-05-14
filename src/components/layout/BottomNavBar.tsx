@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Calendar, User, DollarSign, ShoppingCart, Settings, History } from 'lucide-react';
+import { Calendar, User, DollarSign, ShoppingCart, Settings } from 'lucide-react';
 
 const BottomNavBar: React.FC = () => {
   return (
@@ -9,7 +9,7 @@ const BottomNavBar: React.FC = () => {
       <NavLink 
         to="/agendamentos" 
         className={({ isActive }) => 
-          `flex flex-col items-center justify-center w-1/6 py-1 ${isActive ? 'text-petblue-DEFAULT' : 'text-gray-500'}`
+          `flex flex-col items-center justify-center w-1/5 py-1 ${isActive ? 'text-petblue-DEFAULT' : 'text-gray-500'}`
         }
       >
         <Calendar size={20} />
@@ -18,7 +18,7 @@ const BottomNavBar: React.FC = () => {
       <NavLink 
         to="/clientes" 
         className={({ isActive }) => 
-          `flex flex-col items-center justify-center w-1/6 py-1 ${isActive ? 'text-petblue-DEFAULT' : 'text-gray-500'}`
+          `flex flex-col items-center justify-center w-1/5 py-1 ${isActive ? 'text-petblue-DEFAULT' : 'text-gray-500'}`
         }
       >
         <User size={20} />
@@ -27,25 +27,16 @@ const BottomNavBar: React.FC = () => {
       <NavLink 
         to="/caixa" 
         className={({ isActive }) => 
-          `flex flex-col items-center justify-center w-1/6 py-1 ${isActive ? 'text-petblue-DEFAULT' : 'text-gray-500'}`
+          `flex flex-col items-center justify-center w-1/5 py-1 ${isActive ? 'text-petblue-DEFAULT' : 'text-gray-500'}`
         }
       >
         <DollarSign size={20} />
         <span className="text-xs mt-0.5">Caixa</span>
       </NavLink>
       <NavLink 
-        to="/historico" 
-        className={({ isActive }) => 
-          `flex flex-col items-center justify-center w-1/6 py-1 ${isActive ? 'text-petblue-DEFAULT' : 'text-gray-500'}`
-        }
-      >
-        <History size={20} />
-        <span className="text-xs mt-0.5">Histórico</span>
-      </NavLink>
-      <NavLink 
         to="/produtos-servicos" 
         className={({ isActive }) => 
-          `flex flex-col items-center justify-center w-1/6 py-1 ${isActive ? 'text-petblue-DEFAULT' : 'text-gray-500'}`
+          `flex flex-col items-center justify-center w-1/5 py-1 ${isActive ? 'text-petblue-DEFAULT' : 'text-gray-500'}`
         }
       >
         <ShoppingCart size={20} />
@@ -54,7 +45,7 @@ const BottomNavBar: React.FC = () => {
       <NavLink 
         to="/configuracoes" 
         className={({ isActive }) => 
-          `flex flex-col items-center justify-center w-1/6 py-1 ${isActive ? 'text-petblue-DEFAULT' : 'text-gray-500'}`
+          `flex flex-col items-center justify-center w-1/5 py-1 ${isActive ? 'text-petblue-DEFAULT' : 'text-gray-500'}`
         }
       >
         <Settings size={20} />

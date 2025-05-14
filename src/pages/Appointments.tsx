@@ -7,145 +7,46 @@ import PageHeader from '@/components/layout/PageHeader';
 import KanbanBoard from '@/components/common/KanbanBoard';
 import { getCurrentDate, formatDate, openWhatsApp, openGoogleMaps, generateReminderMessage, generatePetReadyMessage } from '@/utils/helpers';
 import { Plus, MessageSquare, Map, Clock } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/context/AuthContext';
-import { toast } from '@/components/ui/use-toast';
 
 const Appointments: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { 
+    appointments, 
+    clients, 
+    pets, 
+    services,
+    taxiDogs,
+    getAppointmentsByStatus,
+    getAppointmentsByDate,
+    getClientById,
+    getPetById,
+    getServiceById,
+    getTaxiDogById,
+    confirmAppointment,
+    markAppointmentReady,
+    finalizeAppointment
+  } = useAppContext();
+  
   const [selectedDate, setSelectedDate] = useState<string>(getCurrentDate());
-  const [appointments, setAppointments] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [clients, setClients] = useState<any[]>([]);
-  const [pets, setPets] = useState<any[]>([]);
-  const [services, setServices] = useState<any[]>([]);
-  const [taxiDogs, setTaxiDogs] = useState<any[]>([]);
+  const [todayAppointments, setTodayAppointments] = useState(getAppointmentsByDate(selectedDate));
   
+  // Update todayAppointments when selectedDate or appointments change
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        
-        // Buscar todos os agendamentos para a data selecionada
-        const { data: appointmentsData, error: appointmentsError } = await supabase
-          .from('appointments')
-          .select('*')
-          .eq('date', selectedDate);
-        
-        if (appointmentsError) throw appointmentsError;
-        
-        // Buscar clientes, pets, serviços e taxi dogs
-        const { data: clientsData, error: clientsError } = await supabase
-          .from('clients')
-          .select('*');
-        
-        if (clientsError) throw clientsError;
-        
-        const { data: petsData, error: petsError } = await supabase
-          .from('pets')
-          .select('*');
-        
-        if (petsError) throw petsError;
-        
-        const { data: servicesData, error: servicesError } = await supabase
-          .from('services')
-          .select('*');
-        
-        if (servicesError) throw servicesError;
-        
-        const { data: taxiDogsData, error: taxiDogsError } = await supabase
-          .from('taxi_dogs')
-          .select('*');
-        
-        if (taxiDogsError) throw taxiDogsError;
-        
-        setAppointments(appointmentsData || []);
-        setClients(clientsData || []);
-        setPets(petsData || []);
-        setServices(servicesData || []);
-        setTaxiDogs(taxiDogsData || []);
-      } catch (error: any) {
-        toast({
-          variant: "destructive",
-          title: "Erro ao carregar dados",
-          description: error.message || "Ocorreu um erro ao buscar os dados.",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, [selectedDate]);
+    setTodayAppointments(getAppointmentsByDate(selectedDate));
+  }, [selectedDate, appointments, getAppointmentsByDate]);
   
-  // Filter appointments by status
-  const scheduledAppointments = appointments.filter(app => app.status === 'agendado');
-  const confirmedAppointments = appointments.filter(app => app.status === 'confirmado');
-  const readyForPickupAppointments = appointments.filter(app => app.status === 'para_retirar');
-  
-  const getClientById = (id: string) => clients.find(client => client.id === id);
-  const getPetById = (id: string) => pets.find(pet => pet.id === id);
-  const getServiceById = (id: string) => services.find(service => service.id === id);
-  const getTaxiDogById = (id: string) => taxiDogs.find(taxiDog => taxiDog.id === id);
-  
-  const confirmAppointment = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('appointments')
-        .update({ status: 'confirmado' })
-        .eq('id', id);
-      
-      if (error) throw error;
-      
-      setAppointments(prev => 
-        prev.map(app => app.id === id ? { ...app, status: 'confirmado' } : app)
-      );
-      
-      toast({
-        title: "Agendamento confirmado!"
-      });
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Erro ao confirmar agendamento",
-        description: error.message
-      });
-    }
-  };
-  
-  const markAppointmentReady = async (id: string) => {
-    try {
-      const { error } = await supabase
-        .from('appointments')
-        .update({ status: 'para_retirar' })
-        .eq('id', id);
-      
-      if (error) throw error;
-      
-      setAppointments(prev => 
-        prev.map(app => app.id === id ? { ...app, status: 'para_retirar' } : app)
-      );
-      
-      toast({
-        title: "Pet pronto para retirada!"
-      });
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Erro ao marcar como pronto",
-        description: error.message
-      });
-    }
-  };
+  // Filter appointments by status for today
+  const scheduledAppointments = todayAppointments.filter(app => app.status === 'agendado');
+  const confirmedAppointments = todayAppointments.filter(app => app.status === 'confirmado');
+  const readyForPickupAppointments = todayAppointments.filter(app => app.status === 'para_retirar');
   
   // Handle sending reminder
   const handleSendReminder = (appointmentId: string) => {
     const appointment = appointments.find(app => app.id === appointmentId);
     if (!appointment) return;
     
-    const client = getClientById(appointment.client_id);
-    const pet = getPetById(appointment.pet_id);
+    const client = getClientById(appointment.clientId);
+    const pet = getPetById(appointment.petId);
     
     if (!client || !pet) return;
     
@@ -164,8 +65,8 @@ const Appointments: React.FC = () => {
     const appointment = appointments.find(app => app.id === appointmentId);
     if (!appointment) return;
     
-    const client = getClientById(appointment.client_id);
-    const pet = getPetById(appointment.pet_id);
+    const client = getClientById(appointment.clientId);
+    const pet = getPetById(appointment.petId);
     
     if (!client || !pet) return;
     
@@ -175,14 +76,11 @@ const Appointments: React.FC = () => {
   };
   
   // Render appointment card
-  const renderAppointmentCard = (appointment: any, status: 'agendado' | 'confirmado' | 'para_retirar') => {
-    const client = getClientById(appointment.client_id);
-    const pet = getPetById(appointment.pet_id);
-    const appointmentServices = appointment.services.map((id: string) => {
-      const service = getServiceById(id);
-      return service ? service.name : '';
-    }).filter(Boolean).join(', ');
-    const taxiDog = appointment.taxi_dog_id ? getTaxiDogById(appointment.taxi_dog_id) : null;
+  const renderAppointmentCard = (appointment: typeof appointments[0], status: 'agendado' | 'confirmado' | 'para_retirar') => {
+    const client = getClientById(appointment.clientId);
+    const pet = getPetById(appointment.petId);
+    const appointmentServices = appointment.services.map(id => getServiceById(id)?.name).filter(Boolean).join(', ');
+    const taxiDog = appointment.taxiDogId ? getTaxiDogById(appointment.taxiDogId) : null;
     
     if (!client || !pet) return null;
     
@@ -289,36 +187,30 @@ const Appointments: React.FC = () => {
         />
       </div>
       
-      {isLoading ? (
-        <div className="flex justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-petblue-DEFAULT"></div>
-        </div>
-      ) : (
-        <div className="overflow-x-auto -mx-4 px-4">
-          <KanbanBoard
-            columns={[
-              {
-                id: 'scheduled',
-                title: 'Agendado',
-                items: scheduledAppointments,
-                renderItem: (appointment) => renderAppointmentCard(appointment, 'agendado')
-              },
-              {
-                id: 'confirmed',
-                title: 'Confirmado',
-                items: confirmedAppointments,
-                renderItem: (appointment) => renderAppointmentCard(appointment, 'confirmado')
-              },
-              {
-                id: 'ready',
-                title: 'Para Retirar',
-                items: readyForPickupAppointments,
-                renderItem: (appointment) => renderAppointmentCard(appointment, 'para_retirar')
-              }
-            ]}
-          />
-        </div>
-      )}
+      <div className="overflow-x-auto -mx-4 px-4">
+        <KanbanBoard
+          columns={[
+            {
+              id: 'scheduled',
+              title: 'Agendado',
+              items: scheduledAppointments,
+              renderItem: (appointment) => renderAppointmentCard(appointment, 'agendado')
+            },
+            {
+              id: 'confirmed',
+              title: 'Confirmado',
+              items: confirmedAppointments,
+              renderItem: (appointment) => renderAppointmentCard(appointment, 'confirmado')
+            },
+            {
+              id: 'ready',
+              title: 'Para Retirar',
+              items: readyForPickupAppointments,
+              renderItem: (appointment) => renderAppointmentCard(appointment, 'para_retirar')
+            }
+          ]}
+        />
+      </div>
     </div>
   );
 };
