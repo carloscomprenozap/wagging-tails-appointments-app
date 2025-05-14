@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -24,6 +25,22 @@ export default {
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
+				petblue: {
+					DEFAULT: '#3B82F6',
+					dark: '#2563EB'
+				},
+				petgreen: {
+					DEFAULT: '#10B981',
+					dark: '#059669'
+				},
+				petyellow: {
+					DEFAULT: '#F59E0B',
+					dark: '#D97706'
+				},
+				petred: {
+					DEFAULT: '#EF4444',
+					dark: '#DC2626'
+				},
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
