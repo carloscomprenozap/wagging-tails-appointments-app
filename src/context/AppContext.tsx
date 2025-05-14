@@ -12,7 +12,7 @@ import {
   UserProfile, 
   PaymentMethod
 } from '../models/types';
-import { v4 as uuidv4 } from '@/node_modules/uuid';
+import { generateId } from '../utils/idUtils';
 import { toast } from 'sonner';
 
 interface AppContextType {
@@ -364,7 +364,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const addClient = (clientData: Omit<Client, 'id' | 'pendingBalance'>) => {
     const newClient: Client = {
       ...clientData,
-      id: uuidv4(),
+      id: generateId(),
       pendingBalance: 0
     };
     setClients([...clients, newClient]);
@@ -395,7 +395,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const addPet = (petData: Omit<Pet, 'id'>) => {
     const newPet: Pet = {
       ...petData,
-      id: uuidv4()
+      id: generateId()
     };
     setPets([...pets, newPet]);
     toast.success('Pet adicionado com sucesso!');
@@ -425,7 +425,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const addService = (serviceData: Omit<Service, 'id'>) => {
     const newService: Service = {
       ...serviceData,
-      id: uuidv4()
+      id: generateId()
     };
     setServices([...services, newService]);
     toast.success('Serviço adicionado com sucesso!');
@@ -454,7 +454,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const addProduct = (productData: Omit<Product, 'id'>) => {
     const newProduct: Product = {
       ...productData,
-      id: uuidv4()
+      id: generateId()
     };
     setProducts([...products, newProduct]);
     toast.success('Produto adicionado com sucesso!');
@@ -487,7 +487,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const addTaxiDog = (taxiDogData: Omit<TaxiDog, 'id'>) => {
     const newTaxiDog: TaxiDog = {
       ...taxiDogData,
-      id: uuidv4()
+      id: generateId()
     };
     setTaxiDogs([...taxiDogs, newTaxiDog]);
     toast.success('Serviço de Taxi Dog adicionado com sucesso!');
@@ -517,7 +517,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const addAppointment = (appointmentData: Omit<Appointment, 'id' | 'status' | 'paid'>) => {
     const newAppointment: Appointment = {
       ...appointmentData,
-      id: uuidv4(),
+      id: generateId(),
       status: 'agendado',
       paid: false
     };
@@ -595,7 +595,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const addSale = (saleData: Omit<Sale, 'id' | 'date'>) => {
     const newSale: Sale = {
       ...saleData,
-      id: uuidv4(),
+      id: generateId(),
       date: new Date().toISOString().split('T')[0]
     };
     setSales([...sales, newSale]);
@@ -628,7 +628,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const addExpense = (expenseData: Omit<Expense, 'id'>) => {
     const newExpense: Expense = {
       ...expenseData,
-      id: uuidv4()
+      id: generateId()
     };
     setExpenses([...expenses, newExpense]);
     toast.success('Despesa adicionada com sucesso!');
