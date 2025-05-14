@@ -113,8 +113,8 @@ const ProductsServices: React.FC = () => {
     
     updateProduct({
       ...editingProduct,
-      price: parseFloat(editingProduct.price as any),
-      stock: parseInt(editingProduct.stock as any, 10)
+      price: typeof editingProduct.price === 'string' ? parseFloat(editingProduct.price) : editingProduct.price,
+      stock: typeof editingProduct.stock === 'string' ? parseInt(editingProduct.stock, 10) : editingProduct.stock
     });
     
     setEditingProduct(null);
@@ -157,8 +157,8 @@ const ProductsServices: React.FC = () => {
     
     updateService({
       ...editingService,
-      price: parseFloat(editingService.price as any),
-      duration: parseInt(editingService.duration as any, 10)
+      price: typeof editingService.price === 'string' ? parseFloat(editingService.price) : editingService.price,
+      duration: typeof editingService.duration === 'string' ? parseInt(editingService.duration, 10) : editingService.duration
     });
     
     setEditingService(null);
@@ -199,13 +199,15 @@ const ProductsServices: React.FC = () => {
     
     updateTaxiDog({
       ...editingTaxiDog,
-      price: parseFloat(editingTaxiDog.price as any)
+      price: typeof editingTaxiDog.price === 'string' ? parseFloat(editingTaxiDog.price) : editingTaxiDog.price
     });
     
     setEditingTaxiDog(null);
     
     toast.success('Serviço de Taxi Dog atualizado com sucesso!');
   };
+
+  // Fix the onChange handlers in the editing forms
   
   // Render products tab
   const renderProductsTab = () => (
@@ -363,8 +365,11 @@ const ProductsServices: React.FC = () => {
                   <input
                     type="number"
                     id="edit-product-price"
-                    value={editingProduct.price}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
+                    value={typeof editingProduct.price === 'string' ? editingProduct.price : editingProduct.price.toString()}
+                    onChange={(e) => setEditingProduct({ 
+                      ...editingProduct, 
+                      price: parseFloat(e.target.value) || 0
+                    })}
                     className="border border-gray-300 rounded-md pl-9 pr-3 py-2 w-full"
                     min="0"
                     step="0.01"
@@ -380,8 +385,11 @@ const ProductsServices: React.FC = () => {
                 <input
                   type="number"
                   id="edit-product-stock"
-                  value={editingProduct.stock}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, stock: e.target.value })}
+                  value={typeof editingProduct.stock === 'string' ? editingProduct.stock : editingProduct.stock.toString()}
+                  onChange={(e) => setEditingProduct({ 
+                    ...editingProduct, 
+                    stock: parseInt(e.target.value, 10) || 0
+                  })}
                   className="border border-gray-300 rounded-md px-3 py-2 w-full"
                   min="0"
                   step="1"
@@ -627,8 +635,11 @@ const ProductsServices: React.FC = () => {
                   <input
                     type="number"
                     id="edit-service-price"
-                    value={editingService.price}
-                    onChange={(e) => setEditingService({ ...editingService, price: e.target.value })}
+                    value={typeof editingService.price === 'string' ? editingService.price : editingService.price.toString()}
+                    onChange={(e) => setEditingService({ 
+                      ...editingService, 
+                      price: parseFloat(e.target.value) || 0
+                    })}
                     className="border border-gray-300 rounded-md pl-9 pr-3 py-2 w-full"
                     min="0"
                     step="0.01"
@@ -644,8 +655,11 @@ const ProductsServices: React.FC = () => {
                 <input
                   type="number"
                   id="edit-service-duration"
-                  value={editingService.duration}
-                  onChange={(e) => setEditingService({ ...editingService, duration: e.target.value })}
+                  value={typeof editingService.duration === 'string' ? editingService.duration : editingService.duration.toString()}
+                  onChange={(e) => setEditingService({ 
+                    ...editingService, 
+                    duration: parseInt(e.target.value, 10) || 0
+                  })}
                   className="border border-gray-300 rounded-md px-3 py-2 w-full"
                   min="0"
                   step="1"
@@ -862,8 +876,11 @@ const ProductsServices: React.FC = () => {
                 <input
                   type="number"
                   id="edit-taxidog-price"
-                  value={editingTaxiDog.price}
-                  onChange={(e) => setEditingTaxiDog({ ...editingTaxiDog, price: e.target.value })}
+                  value={typeof editingTaxiDog.price === 'string' ? editingTaxiDog.price : editingTaxiDog.price.toString()}
+                  onChange={(e) => setEditingTaxiDog({
+                    ...editingTaxiDog,
+                    price: parseFloat(e.target.value) || 0
+                  })}
                   className="border border-gray-300 rounded-md pl-9 pr-3 py-2 w-full"
                   min="0"
                   step="0.01"
