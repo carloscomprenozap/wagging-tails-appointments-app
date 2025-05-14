@@ -2,9 +2,13 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
+import { Database } from '@/integrations/supabase/types';
+
+// Define as tabelas válidas para tipagem forte
+type TableName = keyof Database['public']['Tables'];
 
 interface QueryOptions<T> {
-  tableName: string;
+  tableName: TableName;
   column?: string;
   value?: any;
   orderBy?: {
@@ -30,7 +34,8 @@ export function useSupabaseQuery<T>({
       try {
         setIsLoading(true);
         
-        let query = supabase.from(tableName).select('*');
+        // Usamos as type assertions para garantir que o TypeScript entenda que tableName é válido
+        let query = supabase.from(tableName as TableName).select('*');
         
         if (column && value !== undefined) {
           query = query.eq(column, value);
