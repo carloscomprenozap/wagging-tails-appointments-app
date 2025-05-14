@@ -12,7 +12,7 @@ import {
   UserProfile, 
   PaymentMethod
 } from '../models/types';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from '@/node_modules/uuid';
 import { toast } from 'sonner';
 
 interface AppContextType {
