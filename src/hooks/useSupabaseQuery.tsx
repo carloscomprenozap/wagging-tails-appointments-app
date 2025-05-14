@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/components/ui/use-toast';
 import { Database } from '@/integrations/supabase/types';
 
-// Define as tabelas válidas para tipagem forte
+// Define valid table names for strong typing
 type TableName = keyof Database['public']['Tables'];
 
 interface QueryOptions<T> {
@@ -34,8 +34,8 @@ export function useSupabaseQuery<T>({
       try {
         setIsLoading(true);
         
-        // Usamos as type assertions para garantir que o TypeScript entenda que tableName é válido
-        let query = supabase.from(tableName as TableName).select('*');
+        // Use the tableName directly without additional type assertions
+        let query = supabase.from(tableName).select('*');
         
         if (column && value !== undefined) {
           query = query.eq(column, value);
